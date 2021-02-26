@@ -8,8 +8,11 @@ const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/users', userRouter);
-app.use('/cards', cardRouter);
+//app.use('/users', userRouter);
+//app.use('/cards', cardRouter);
+
+app.use(userRouter);
+app.use(cardRouter);
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
