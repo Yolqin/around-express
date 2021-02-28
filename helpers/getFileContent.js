@@ -3,7 +3,8 @@ const fs = require('fs').promises;
 function getFileContent(path) {
   return fs.readFile(path, { encoding: 'utf-8' })
     .then(JSON.parse)
-    .catch((err) => console.log(err));
+    // eslint-disable-next-line no-undef
+    .catch(next);
 }
 
 module.exports = getFileContent;

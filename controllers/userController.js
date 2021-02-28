@@ -14,7 +14,7 @@ function getSingleUser(req, res) {
   return getFileContent(pathToData)
     .then((users) => {
       // eslint-disable-next-line no-shadow
-      const user = users.find((user) => user._id === req.params._id);
+      const user = users.find((user) => user.id === req.params.id);
 
       if (user) {
         return res.status(200).send(user);

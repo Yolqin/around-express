@@ -8,8 +8,6 @@ const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use('/users', userRouter);
-//app.use('/cards', cardRouter);
 
 app.use(userRouter);
 app.use(cardRouter);
@@ -20,5 +18,6 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   // if everything works fine, the console will show which port the application is listening to
+  // eslint-disable-next-line no-console
   console.log(`App listening at port ${PORT}`);
 });
