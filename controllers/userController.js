@@ -7,6 +7,9 @@ function getUsers(req, res) {
   return getFileContent(pathToData)
     .then((users) => {
       res.status(200).send(users);
+    })
+    .catch(() => { // tutor suggested to omit err
+      res.status(404).send({ message: 'Requested resource not found' });
     });
 }
 
