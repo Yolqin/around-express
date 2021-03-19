@@ -1,12 +1,31 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const path = require('path');
 
 const { PORT = 3000 } = process.env;
 const app = express();
 
+mongoose.connect('mongodb://localhost:27017/aroundb', {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+});
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: '60548f71a18aab148b511f1c' // paste the _id of the test user created in the previous step
+  };
+
+  next();
+});
+
+
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(userRouter);
