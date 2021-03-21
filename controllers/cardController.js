@@ -5,8 +5,8 @@ function getCards(req, res) {
     .then((cards) => {
       res.status(200).send(cards);
     })
-    .catch(() => { // tutor suggested to omit err
-      res.status(500).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
     });
 }
 
@@ -14,8 +14,11 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   return Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(200).send(card))
-    .catch(() => {
-      res.status(400).send({ message: 'Invalid data passed to the methods for creating a card/user or updating a user\'s avatar/profile' });
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
     });
 };
 
@@ -27,8 +30,11 @@ const deleteCard = (req, res) => {
       }
       return res.status(404).send({ message: 'Card not found' });
     })
-    .catch(() => {
-      res.status(500).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
     });
 };
 
@@ -38,12 +44,15 @@ const likeCard = (req, res) => {
     { new: true })
     .then((card) => {
       if (card) {
-        return res.status(200).send({ message: 'Card Deleted' });
+        return res.status(200).send(card);
       }
       return res.status(404).send({ message: 'Card not found' });
     })
-    .catch(() => {
-      res.status(500).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
     });
 };
 
@@ -53,12 +62,15 @@ const dislikeCard = (req, res) => {
     { new: true })
     .then((card) => {
       if (card) {
-        return res.status(200).send({ message: 'Card Deleted' });
+        return res.status(200).send(card);
       }
       return res.status(404).send({ message: 'Card not found' });
     })
-    .catch(() => {
-      res.status(500).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
     });
 };
 

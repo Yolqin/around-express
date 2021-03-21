@@ -5,21 +5,24 @@ function getUsers(req, res) {
     .then((users) => {
       res.status(200).send(users);
     })
-    .catch(() => { // tutor suggested to omit err
-      res.status(500).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      res.status(404).send({ message: err.message });
     });
 }
 
 function getSingleUser(req, res) {
-  return User.find({ _id: req.params.id })
-    .then((users) => {
-      // eslint-disable-next-line no-shadow
-      const user = users.find((user) => user.id === req.params.id);
-
+  return User.findById({ _id: req.params.id })
+    .then((user) => {
       if (user) {
         return res.status(200).send(user);
       }
       return res.status(404).send({ message: 'User ID not found' });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
     });
 }
 
@@ -27,8 +30,11 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   return User.create({ name, about, avatar })
     .then((user) => res.status(200).send(user))
-    .catch(() => {
-      res.status(400).send({ message: 'Invalid data passed to the methods for creating a card/user or updating a user\'s avatar/profile' });
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
     });
 };
 
@@ -45,8 +51,8 @@ const updateUser = (req, res) => {
       }
       return res.status(404).send({ message: 'User ID not found' });
     })
-    .catch(() => {
-      res.status(500).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
     });
 };
 
@@ -63,8 +69,8 @@ const updateAvatar = (req, res) => {
       }
       return res.status(404).send({ message: 'User ID not found' });
     })
-    .catch(() => {
-      res.status(500).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
     });
 };
 
